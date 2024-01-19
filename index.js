@@ -25,6 +25,8 @@ app.use(cors({
     origin: '*'
 }));
 app.use(express.json());
+app.use(require("./routes"));
+app.use(require("./middlewares/error"));
 
 // ? Server listen.
 app.listen(PORT, () => {
