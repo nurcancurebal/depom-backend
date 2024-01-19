@@ -11,7 +11,7 @@ const Model = mongoose.model('Inventory',
             required: true
         },
         date: {
-            type: String,
+            type: Date,
             required: true,
             unique: true
         },

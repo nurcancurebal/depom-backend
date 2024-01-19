@@ -4,9 +4,11 @@ module.exports = async function (req, res, next) {
 
     try {
 
-        const inventory = res.locals.inventory;
+        const body = req.body;
 
-        let result = await ModelInventory.find({ userId: user._id });
+        let result = await ModelInventory.find({
+            barcode: body.barcode,
+        });
 
         result = Array.from(result).map(item => item._doc);
 
