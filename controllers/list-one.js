@@ -6,7 +6,7 @@ module.exports = async function (req, res, next) {
 
         const barcode = req.params.barcode;
 
-        let result = await ModelInventory.find({ barcode });
+        let result = await ModelInventory.findOne({ barcode });
 
         return res.send(result);
 
