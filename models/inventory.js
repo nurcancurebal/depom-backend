@@ -4,8 +4,7 @@ const Model = mongoose.model('Inventory',
     {
         barcode: {
             type: String,
-            required: true,
-            unique: true
+            required: true
         },
         productname: {
             type: String,

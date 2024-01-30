@@ -1,4 +1,4 @@
-const ModelInventory = require("./../models/inventory");
+const ModelInventory = require("../models/inventory");
 
 module.exports = async function (req, res, next) {
 
@@ -6,7 +6,7 @@ module.exports = async function (req, res, next) {
 
         const barcode = req.params.barcode;
 
-        let result = await ModelInventory.findOne({ barcode });
+        let result = await ModelInventory.find({ barcode });
 
         return res.send(result);
 
