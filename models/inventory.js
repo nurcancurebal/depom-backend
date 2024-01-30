@@ -10,10 +10,6 @@ const Model = mongoose.model('Inventory',
             type: String,
             required: true
         },
-        date: {
-            type: Date,
-            required: true,
-        },
         category: {
             type: String,
             required: true
@@ -40,6 +36,14 @@ const Model = mongoose.model('Inventory',
         },
         unitprice: {
             type: Number,
+            required: true
+        },
+        date: {
+            type: Date,
+            required: true,
+        },
+        process: {
+            type: String,
             required: true
         }
     }
