@@ -4,9 +4,21 @@ module.exports = async function (req, res, next) {
 
     try {
 
-        let result = await ModelInventory.find();
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
 
-        result = Array.from(result).map(item => item._doc);
+        const sort = req.query.sort || 'barcode';
+
+        const sortName = sort.startsWith('-') ? sort.slice(1) : sort;
+
+        const agg = [
+            { $sort: { [sortName]: sort.startsWith('-') ? -1 : 1 } },
+            { $skip: skip },
+            { $limit: limit }
+        ];
+
+        let result = await ModelInventory.aggregate(agg);
 
         return res.send(result);
 
