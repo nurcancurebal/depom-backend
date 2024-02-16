@@ -6,10 +6,9 @@ module.exports = async function (req, res, next) {
 
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
-        const skip = (page - 1) * limit;
-
         const sort = req.query.sort || 'barcode';
-
+        const skip = (page - 1) * limit;
+        
         const sortName = sort.startsWith('-') ? sort.slice(1) : sort;
 
         const agg = [
