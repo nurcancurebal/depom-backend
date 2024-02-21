@@ -21,9 +21,9 @@ module.exports = async function (req, res, next) {
             process: "checkout"
         };
 
-        await ModelInventory.create(data);
+        const result = await ModelInventory.create(data);
 
-        return res.send();
+        return res.send(result);
 
     } catch (error) {
 
