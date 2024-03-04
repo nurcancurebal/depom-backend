@@ -1,91 +1,91 @@
 const ModelInventory = require("./../models/inventory");
 
 module.exports = async function (req, res, next) {
-
     try {
 
-        let result = await ModelInventory.find();
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const sort = req.query.sort || 'barcode';
+        const skip = (page - 1) * limit;
 
-        const newData = {};
+        const sortName = sort.startsWith('-') ? sort.slice(1) : sort;
 
-        for (const { _doc: iterator } of result) {
-            const newKey = `${iterator?.barcode}_${iterator?.unit}`;
-
-            if (!newData?.[newKey]) {
-                newData[newKey] = {
-                    _id: iterator?._id,
-                    data: [iterator],
-                    barcode: iterator?.barcode,
-                    unit: iterator?.unit,
-                    productname: iterator?.productname,
-                    category: iterator?.category,
-                    subcategory: iterator?.subcategory,
-                    supplier: iterator?.supplier,
-                    brand: iterator?.brand,
+        let result = await ModelInventory.aggregate([
+            {
+                $group: {
+                    _id: { barcode: "$barcode", unit: "$unit" },
+                    data: { $push: "$$ROOT" },
+                    productname: { $first: "$productname" },
+                    category: { $first: "$category" },
+                    subcategory: { $first: "$subcategory" },
+                    supplier: { $first: "$supplier" },
+                    brand: { $first: "$brand" },
                 }
-            } else {
-                newData[newKey].data.push(iterator);
-            };
-        };
+            },
+            {
+                $addFields: {
+                    entryData: {
+                        $filter: {
+                            input: "$data",
+                            as: "item",
+                            cond: { $eq: ["$$item.process", "entry"] }
+                        }
+                    },
+                    checkoutData: {
+                        $filter: {
+                            input: "$data",
+                            as: "item",
+                            cond: { $eq: ["$$item.process", "checkout"] }
+                        }
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    stockQuantity: {
+                        $subtract: [
+                            { $sum: "$entryData.quantity" },
+                            { $sum: "$checkoutData.quantity" }
+                        ]
+                    },
+                    entryAverage: { $avg: "$entryData.unitprice" },
+                    checkoutAverage: { $avg: "$checkoutData.unitprice" },
+                }
+            },
+            {
+                $addFields: {
+                    totalUnitPrice: "$entryAverage",
+                    profitLoss: {
+                        $cond: [
+                            { $eq: [{ $size: "$checkoutData" }, 0] },
+                            "-",
+                            { $subtract: ["$checkoutAverage", "$entryAverage"] }
+                        ]
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    productname: 1,
+                    category: 1,
+                    subcategory: 1,
+                    supplier: 1,
+                    brand: 1,
+                    stockQuantity: 1,
+                    totalUnitPrice: 1,
+                    profitLoss: 1,
+                    date: { $max: "$data.date" }
+                }
+            },
+            { $sort: { [sortName]: sort.startsWith('-') ? -1 : 1 } },
+            { $skip: skip },
+            { $limit: limit },
 
-        for (const iterator of Object.keys(newData)) {
-            const { data } = newData[iterator];
+        ]);
 
-            const catchDate = data.sort((a, b) => new Date(b?.date) - new Date(a?.date))[0];
-
-            newData[iterator].date = catchDate?.date;
-        };
-
-        let newDataArray = [];
-
-        for (const iterator of Object.keys(newData)) {
-            newDataArray.push(newData[iterator]);
-        };
-
-        newDataArray = newDataArray.map((item) => {
-
-            let stockQuantity = 0;
-
-            let filteredDataEntry = item?.data
-                .filter((i) => i?.process === "entry");
-
-            filteredDataEntry.forEach(element => {
-                stockQuantity += element?.quantity;
-            });
-
-            let filteredDataCheckout = item?.data
-                .filter((i) => i?.process === "checkout");
-            filteredDataCheckout.forEach(element => {
-                stockQuantity -= element?.quantity;
-            });
-
-            let totalUnitPrice = 0;
-            let profitLoss = 0;
-
-            let checkoutAverage = filteredDataCheckout.reduce((total, i) => total + i.unitprice, 0) / filteredDataCheckout.length;
-
-            let entryAverage = filteredDataEntry.reduce((total, i) => total + i.unitprice, 0) / filteredDataEntry.length;
-
-            totalUnitPrice = entryAverage;
-
-            if (filteredDataCheckout.length > 0) {
-                profitLoss = checkoutAverage - entryAverage;
-            } else {
-                profitLoss = "-";
-            }
-
-
-            delete item?.data;
-            return { ...item, stockQuantity, totalUnitPrice, profitLoss };
-        });
-
-        newDataArray = newDataArray.sort((a, b) => new Date(b?.date) - new Date(a?.date));
-
-        return res.send(newDataArray);
-
+        return res.send(result);
     } catch (error) {
-
         return next(error);
-
-    };
-}
+    }
+};
