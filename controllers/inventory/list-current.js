@@ -55,7 +55,6 @@ module.exports = async function (req, res, next) {
                         ]
                     },
                     entryAverage: { $avg: "$entryData.unitprice" },
-                    checkoutAverage: { $avg: "$checkoutData.unitprice" },
                 }
             },
             {
@@ -65,7 +64,15 @@ module.exports = async function (req, res, next) {
                         $cond: [
                             { $eq: [{ $size: "$checkoutData" }, 0] },
                             "-",
-                            { $subtract: ["$checkoutAverage", "$entryAverage"] }
+                            {
+                                $sum: {
+                                    $map: {
+                                        input: "$checkoutData",
+                                        as: "item",
+                                        in: { $subtract: ["$$item.unitprice", "$entryAverage"] }
+                                    }
+                                }
+                            }
                         ]
                     }
                 }

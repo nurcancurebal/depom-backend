@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-router.use(require(" ../middleware/auth"));
+router.use(require("../middlewares/auth"));
 
 router.get("/", require('../controllers/inventory/list-all'));
 router.get("/current", require('../controllers/inventory/list-current'));
