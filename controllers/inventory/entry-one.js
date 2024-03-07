@@ -1,12 +1,14 @@
-const ModelInventory = require("../models/inventory");
+const ModelInventory = require("../../models/inventory");
 
 module.exports = async function (req, res, next) {
 
     try {
 
         const body = req.body;
+        const user = res.locals.user;
 
         const data = {
+            userId: user._id,
             barcode: body.barcode,
             productname: body.productname,
             category: body.category,
