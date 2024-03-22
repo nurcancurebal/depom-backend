@@ -12,6 +12,8 @@ module.exports = async function (req, res, next) {
             throw new Error("Not found user!!!");
         };
 
+        delete findUser._doc.password;
+
         return res.send(findUser._doc)
 
     } catch (error) {
