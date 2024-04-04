@@ -18,7 +18,6 @@ module.exports = async function (req, res, next) {
             unit: body.unit,
             quantity: body.quantity,
             unitprice: body.unitprice,
-            date: new Date(),
             process: "entry"
         };
 

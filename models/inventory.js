@@ -44,7 +44,7 @@ const Model = mongoose.model('Inventory',
         },
         date: {
             type: Date,
-            required: true,
+            default: Date.now
         },
         process: {
             type: String,
