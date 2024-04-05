@@ -4,15 +4,18 @@ const Model = mongoose.model('User',
     {
         firstname: {
             type: String,
+            trim: true,
             required: true
         },
         lastname: {
             type: String,
+            trim: true,
             required: true
         },
         username: {
             type: String,
             required: true,
+            trim: true,
             unique: true
         },
         birthdate: {
@@ -21,6 +24,7 @@ const Model = mongoose.model('User',
         },
         password: {
             type: String,
+            trim: true,
             required: true
         }
     }
