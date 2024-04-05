@@ -69,7 +69,12 @@ module.exports = async function (req, res, next) {
                                     $map: {
                                         input: "$checkoutData",
                                         as: "item",
-                                        in: { $subtract: ["$$item.unitprice", "$entryAverage"] }
+                                        in: {
+                                            $multiply: [
+                                                { $subtract: ["$$item.unitprice", "$entryAverage"] },
+                                                "$$item.quantity"
+                                            ]
+                                        }
                                     }
                                 }
                             }
