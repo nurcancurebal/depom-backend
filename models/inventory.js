@@ -13,7 +13,6 @@ const Model = mongoose.model('Inventory',
         },
         productname: {
             type: String,
-            trim: true,
             required: true
         },
         category: {
@@ -26,7 +25,6 @@ const Model = mongoose.model('Inventory',
         },
         supplier: {
             type: String,
-            trim: true,
             required: true
         },
         brand: {
