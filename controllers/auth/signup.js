@@ -12,7 +12,8 @@ module.exports = async function (req, res, next) {
         if (!body?.lastname) throw new Error("Lastname not found!");
         if (!body?.birthdate) throw new Error("Birthdate not found!");
 
-        body.birthdate = new Date(body.birthdate.setHours(body.birthdate.getHours() - body.birthdate.getTimezoneOffset() / 60));
+        body.birthdate = new Date(body.birthdate);
+        body.birthdate.setHours(body.birthdate.getHours() - body.birthdate.getTimezoneOffset() / 60);
 
         const data = {
             username: body.username,
