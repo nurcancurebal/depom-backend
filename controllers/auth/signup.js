@@ -1,3 +1,4 @@
+const md5 = require('md5');
 const ModelUser = require("../../models/user");
 
 module.exports = async function (req, res, next) {
@@ -17,7 +18,7 @@ module.exports = async function (req, res, next) {
 
         const data = {
             username: body.username,
-            password: body.password,
+            password: md5(body.password),
             firstname: body.firstname,
             lastname: body.lastname,
             birthdate: body.birthdate
