@@ -1,4 +1,5 @@
 const md5 = require('md5');
+
 const ModelUser = require("../../models/user");
 
 module.exports = async function (req, res, next) {

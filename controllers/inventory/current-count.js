@@ -1,6 +1,6 @@
 const ModelInventory = require("../../models/inventory");
 
-module.exports = async function (req, res, next) {
+module.exports = async function (_req, res, next) {
     try {
 
         const user = res.locals.user;

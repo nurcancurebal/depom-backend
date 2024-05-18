@@ -1,8 +1,9 @@
+const { SECRET } = process.env;
+
 const jwt = require("jsonwebtoken");
 const md5 = require("md5");
-const ModelUser = require("../../models/user");
 
-const { SECRET } = process.env;
+const ModelUser = require("../../models/user");
 
 module.exports = async function (req, res, next) {
 
