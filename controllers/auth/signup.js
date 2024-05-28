@@ -25,9 +25,9 @@ module.exports = async function (req, res, next) {
             birthdate: body.birthdate
         };
 
-        await ModelUser.create(data);
+        let result = await ModelUser.create(data);
 
-        res.send();
+        res.send(result);
 
     } catch (error) {
 
