@@ -7,7 +7,16 @@ module.exports = async function (req, res, next) {
         const user = res.locals.user;
         const body = req.body;
 
-        const findUser = await ModelUser.findByIdAndUpdate(user._id, body);
+        delete body.password;
+
+        const data = {
+            username: body.username,
+            firstname: body.firstname,
+            lastname: body.lastname,
+            birthdate: body.birthdate
+        };
+
+        const findUser = await ModelUser.findByIdAndUpdate(user._id, data);
 
         if (!findUser) {
             throw new Error("Not found user!!!");
@@ -20,5 +29,4 @@ module.exports = async function (req, res, next) {
         return next(error);
 
     };
-
 }
