@@ -14,12 +14,52 @@ module.exports = async function (_req, res, next) {
             {
                 $group: {
                     _id: { barcode: "$barcode", unit: "$unit" },
+                    data: { $push: "$$ROOT" }
                 }
             },
-            { $count: "count" },
+            {
+                $addFields: {
+                    entryData: {
+                        $filter: {
+                            input: "$data",
+                            as: "item",
+                            cond: { $eq: ["$$item.process", "entry"] }
+                        }
+                    },
+                    checkoutData: {
+                        $filter: {
+                            input: "$data",
+                            as: "item",
+                            cond: { $eq: ["$$item.process", "checkout"] }
+                        }
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    stockQuantity: {
+                        $subtract: [
+                            { $sum: "$entryData.quantity" },
+                            { $sum: "$checkoutData.quantity" }
+                        ]
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: null, // Tüm belgeleri tek bir grup olarak toplar
+                    totalStockQuantity: { $sum: "$stockQuantity" }
+                }
+            },
+            {
+                $project: {
+                    _id: 0, // _id alanını gizle
+                    totalStockQuantity: 1
+                }
+            }
         ]);
 
-        return res.send(result[0]);
+        return res.send(result);
     } catch (error) {
         return next(error);
     }
