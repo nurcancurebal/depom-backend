@@ -6,30 +6,25 @@ const md5 = require("md5");
 const ModelUser = require("../../models/user");
 
 module.exports = async function (req, res, next) {
+  try {
+    const body = req.body;
 
-    try {
+    if (!body?.username) throw new Error("Username not found!");
+    if (!body?.password) throw new Error("Password not found!");
 
-        const body = req.body;
+    const resultUser = await ModelUser.findOne({ username: body.username });
 
-        if (!body?.username) throw new Error("Username not found!");
-        if (!body?.password) throw new Error("Password not found!");
+    if (!resultUser) throw new Error("User not found!");
 
-        const resultUser = await ModelUser.findOne({ username: body.username });
+    const hashedPassword = md5(body.password);
 
-        if (!resultUser) throw new Error("User not found!");
+    if (hashedPassword != resultUser.password) throw new Error("Unauthorized!");
 
-        const hashedPassword = md5(body.password);
+    const token = jwt.sign({ id: resultUser._id.toString() }, SECRET);
 
-        if (hashedPassword != resultUser.password) throw new Error("Unauthorized!");
-
-        const token = jwt.sign({ id: resultUser._id.toString() }, SECRET);
-
-        return res.send({ token });
-
-    } catch (error) {
-
-        error.status = 401;
-        return next(error);
-
-    };
+    return res.send({ token });
+  } catch (error) {
+    error.status = 401;
+    return next(error);
+  }
 };

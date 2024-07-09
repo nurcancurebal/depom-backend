@@ -1,26 +1,25 @@
 const ModelInventory = require("../../models/inventory");
 
 module.exports = async function (_req, res, next) {
-    try {
+  try {
+    const user = res.locals.user;
 
-        const user = res.locals.user;
+    let result = await ModelInventory.aggregate([
+      {
+        $match: {
+          userId: user._id,
+        },
+      },
+      {
+        $group: {
+          _id: { barcode: "$barcode", unit: "$unit" },
+        },
+      },
+      { $count: "count" },
+    ]);
 
-        let result = await ModelInventory.aggregate([
-            {
-                $match: {
-                    userId: user._id
-                }
-            },
-            {
-                $group: {
-                    _id: { barcode: "$barcode", unit: "$unit" },
-                }
-            },
-            { $count: "count" },
-        ]);
-
-        return res.send(result[0]);
-    } catch (error) {
-        return next(error);
-    }
+    return res.send(result[0]);
+  } catch (error) {
+    return next(error);
+  }
 };

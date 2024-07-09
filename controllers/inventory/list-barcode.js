@@ -1,20 +1,15 @@
 const ModelInventory = require("../../models/inventory");
 
 module.exports = async function (req, res, next) {
+  try {
+    const user = res.locals.user;
 
-    try {
+    const barcode = req.params.barcode;
 
-        const user = res.locals.user;
+    let result = await ModelInventory.find({ userId: user._id, barcode });
 
-        const barcode = req.params.barcode;
-
-        let result = await ModelInventory.find({ userId: user._id, barcode });
-
-        return res.send(result);
-
-    } catch (error) {
-
-        return next(error);
-
-    };
-}
+    return res.send(result);
+  } catch (error) {
+    return next(error);
+  }
+};

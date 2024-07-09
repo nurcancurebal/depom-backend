@@ -1,23 +1,17 @@
 const ModelUser = require("../../models/user");
 
 module.exports = async function (_req, res, next) {
+  try {
+    const user = res.locals.user;
 
-    try {
+    const findUser = await ModelUser.findOne(user._id);
 
-        const user = res.locals.user;
+    if (!findUser) {
+      throw new Error("Not found user!!!");
+    }
 
-        const findUser = await ModelUser.findOne(user._id);
-
-        if (!findUser) {
-            throw new Error("Not found user!!!");
-        };
-
-        return res.send(findUser._doc)
-
-    } catch (error) {
-
-        return next(error);
-
-    };
-
-}
+    return res.send(findUser._doc);
+  } catch (error) {
+    return next(error);
+  }
+};

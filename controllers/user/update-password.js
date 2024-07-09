@@ -1,29 +1,27 @@
-const md5 = require('md5');
+const md5 = require("md5");
 
 const ModelUser = require("../../models/user");
 
 module.exports = async function (req, res, next) {
+  try {
+    const user = res.locals.user;
+    const body = req.body;
 
-    try {
+    const oldPassword = md5(body.oldPassword);
 
-        const user = res.locals.user;
-        const body = req.body;
+    if (oldPassword !== user.password)
+      throw new Error("Old password is incorrect!");
 
-        const oldPassword = md5(body.oldPassword);
+    const newPassword = md5(body.newPassword);
 
-        if (oldPassword !== user.password) throw new Error("Old password is incorrect!");
+    const updatedUser = await ModelUser.findByIdAndUpdate(user._id, {
+      password: newPassword,
+    });
 
-        const newPassword = md5(body.newPassword);
+    if (!updatedUser) throw new Error("Not found user!!!");
 
-        const updatedUser = await ModelUser.findByIdAndUpdate(user._id, { password: newPassword });
-
-        if (!updatedUser) throw new Error("Not found user!!!");
-
-        res.send();
-
-    } catch (error) {
-
-        return next(error);
-
-    };
-}
+    res.send();
+  } catch (error) {
+    return next(error);
+  }
+};

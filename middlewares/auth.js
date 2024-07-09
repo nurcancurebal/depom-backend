@@ -5,42 +5,36 @@ const ModelUser = require("../models/user");
 const { SECRET } = process.env;
 
 module.exports = async function (req, res, next) {
+  try {
+    let token = req?.headers?.authorization;
 
-    try {
+    if (!token) throw new Error("Unauthorized!");
 
-        let token = req?.headers?.authorization;
+    token = token.split(" ");
 
-        if (!token) throw new Error("Unauthorized!");
+    if (token.length != 2) throw new Error("Unauthorized!");
 
-        token = token.split(" ");
+    token = token[1];
 
-        if (token.length != 2) throw new Error("Unauthorized!");
+    if (!token) throw new Error("Unauthorized!");
 
-        token = token[1];
+    const checkToken = jwt.verify(token, SECRET);
 
-        if (!token) throw new Error("Unauthorized!");
+    const id = checkToken.id;
 
-        const checkToken = jwt.verify(token, SECRET);
+    if (!id) throw new Error("Unauthorized!");
 
-        const id = checkToken.id;
+    let resultUser = await ModelUser.findById(id);
 
-        if (!id) throw new Error("Unauthorized!");
+    if (!resultUser) throw new Error("Unauthorized!");
 
-        let resultUser = await ModelUser.findById(id);
+    resultUser = resultUser._doc;
 
-        if (!resultUser) throw new Error("Unauthorized!");
+    res.locals.user = resultUser;
 
-        resultUser = resultUser._doc;
-
-        res.locals.user = resultUser;
-
-        return next();
-
-    } catch (error) {
-
-        error.status = 401;
-        return next(error);
-
-    };
-
+    return next();
+  } catch (error) {
+    error.status = 401;
+    return next(error);
+  }
 };
