@@ -10,6 +10,7 @@ router.get("/list/count", require('../controllers/inventory/list-count'));
 router.get("/current/count", require('../controllers/inventory/current-count'));
 router.get("/:barcode", require('../controllers/inventory/list-barcode'));
 router.get("/daily/transaction", require('../controllers/inventory/daily-transaction'));
+router.get("/total/profitloss", require('../controllers/inventory/total-profitloss'));
 router.post("/", require('../controllers/inventory/entry-one'));
 router.post("/:barcode", require('../controllers/inventory/checkout-one'));
 
