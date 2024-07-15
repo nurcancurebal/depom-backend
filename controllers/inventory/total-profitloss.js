@@ -107,7 +107,11 @@ module.exports = async function (_req, res, next) {
       },
     ]);
 
-    return res.send(result[0]);
+    return res.send(
+      result.length > 0
+        ? result[0]
+        : { totalProfitLoss: 0, percentageProfitloss: 0 }
+    );
   } catch (error) {
     return next(error);
   }
