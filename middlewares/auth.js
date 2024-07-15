@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const ModelUser = require("../models/user");
 
-const { SECRET } = process.env;
+const { SECRET_KEY } = process.env;
 
 module.exports = async function (req, res, next) {
   try {
@@ -18,7 +18,7 @@ module.exports = async function (req, res, next) {
 
     if (!token) throw new Error("Unauthorized!");
 
-    const checkToken = jwt.verify(token, SECRET);
+    const checkToken = jwt.verify(token, SECRET_KEY);
 
     const id = checkToken.id;
 

@@ -1,4 +1,4 @@
-const { SECRET } = process.env;
+const { SECRET_KEY } = process.env;
 
 const jwt = require("jsonwebtoken");
 const md5 = require("md5");
@@ -20,7 +20,7 @@ module.exports = async function (req, res, next) {
 
     if (hashedPassword != resultUser.password) throw new Error("Unauthorized!");
 
-    const token = jwt.sign({ id: resultUser._id.toString() }, SECRET);
+    const token = jwt.sign({ id: resultUser._id.toString() }, SECRET_KEY);
 
     return res.send({ token });
   } catch (error) {
