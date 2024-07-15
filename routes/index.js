@@ -6,7 +6,7 @@ router.use("/user", require("./user"));
 router.use("/auth", require("./auth"));
 router.get("/", (req, res) => {
   res.json({
-    message: "API - 👋🌎🌍🌏",
+    message: "API - 👋🌎🌍🌏👋",
   });
 });
 module.exports = router;
