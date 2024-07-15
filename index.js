@@ -7,6 +7,7 @@ const cors = require("cors");
 
 // ? Constants.
 const PORT = process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGODB_URI;
 
 // ? Database connection and conf.
 mongoose.connection
@@ -17,7 +18,7 @@ mongoose.connection
     console.log("MongoDB", "Database Connected");
   });
 
-mongoose.connect("mongodb://127.0.0.1:27017/StokTakip");
+mongoose.connect(MONGODB_URI);
 
 // ? Express application create.
 const app = express();
