@@ -20,7 +20,7 @@ jobs:
         ssh-keyscan -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
 
     - name: SSH CONNECT and Pull - Reload
-      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git pull origin master && git reset --hard && exit"
+      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git reset --hard && git pull origin master && npm install && systemctl restart depom-backend && exit"
 
     - name: Cache Container Cleanup
       run: rm -rf ~/.ssh
