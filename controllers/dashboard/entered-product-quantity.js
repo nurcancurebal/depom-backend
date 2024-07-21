@@ -26,18 +26,10 @@ module.exports = async function (_req, res, next) {
         },
       },
       {
-        $addFields: {
-          totalQuantity: {
-            $add: ["$entryTotalQuantity", "$checkoutTotalQuantity"],
-          },
-        },
-      },
-      {
         $project: {
           _id: 0,
           entryTotalQuantity: 1,
           checkoutTotalQuantity: 1,
-          totalQuantity: 1,
         },
       },
     ]);
