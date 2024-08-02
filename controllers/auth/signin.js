@@ -7,18 +7,19 @@ const ModelUser = require("../../models/user");
 
 module.exports = async function (req, res, next) {
   try {
-    const body = req.body;
+    const username = req.body.username;
+    const password = req.body.password;
 
-    if (!body?.username) throw new Error("Username not found!");
-    if (!body?.password) throw new Error("Password not found!");
+    if (!username) throw new Error("Kullanıcı adı boş bırakılamaz!");
+    if (!password) throw new Error("Şifre boş bırakılamaz!");
 
-    const resultUser = await ModelUser.findOne({ username: body.username });
+    const resultUser = await ModelUser.findOne({ username });
 
-    if (!resultUser) throw new Error("User not found!");
+    if (!resultUser) throw new Error("Kullanıcı adı bulunamadı!");
 
-    const hashedPassword = md5(body.password);
+    const hashedPassword = md5(password);
 
-    if (hashedPassword != resultUser.password) throw new Error("Unauthorized!");
+    if (hashedPassword != resultUser.password) throw new Error("Şifre hatalı!");
 
     const token = jwt.sign({ id: resultUser._id.toString() }, SECRET_KEY);
 

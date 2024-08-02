@@ -2,7 +2,7 @@ const ModelInventory = require("../../models/inventory");
 
 module.exports = async function (req, res, next) {
   try {
-    const user = res.locals.user;
+    const userId = res.locals.user._id;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const sort = req.query.sort || "barcode";
@@ -13,7 +13,7 @@ module.exports = async function (req, res, next) {
     let result = await ModelInventory.aggregate([
       {
         $match: {
-          userId: user._id,
+          userId,
         },
       },
       {

@@ -8,25 +8,25 @@ module.exports = async function (req, res, next) {
   try {
     let token = req?.headers?.authorization;
 
-    if (!token) throw new Error("Unauthorized!");
+    if (!token) throw new Error("Token sağlanamadı!");
 
     token = token.split(" ");
 
-    if (token.length != 2) throw new Error("Unauthorized!");
+    if (token.length != 2) throw new Error("Token sağlanamadı!");
 
     token = token[1];
 
-    if (!token) throw new Error("Unauthorized!");
+    if (!token) throw new Error("Token sağlanamadı!");
 
     const checkToken = jwt.verify(token, SECRET_KEY);
 
     const id = checkToken.id;
 
-    if (!id) throw new Error("Unauthorized!");
+    if (!id) throw new Error("Yetkisiz!");
 
     let resultUser = await ModelUser.findById(id);
 
-    if (!resultUser) throw new Error("Unauthorized!");
+    if (!resultUser) throw new Error("Yetkisiz!");
 
     resultUser = resultUser._doc;
 

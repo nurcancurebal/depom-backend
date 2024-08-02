@@ -2,7 +2,7 @@ const ModelInventory = require("../../models/inventory");
 
 module.exports = async function (_req, res, next) {
   try {
-    const user = res.locals.user;
+    const userId = res.locals.user._id;
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -13,7 +13,7 @@ module.exports = async function (_req, res, next) {
     let result = await ModelInventory.aggregate([
       {
         $match: {
-          userId: user._id,
+          userId,
           date: {
             $gte: today, // Bugünden büyük veya eşit
             $lt: tomorrow, // Yarından küçük
