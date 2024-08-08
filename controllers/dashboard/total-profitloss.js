@@ -37,7 +37,7 @@ module.exports = async function (_req, res, next) {
       {
         $addFields: {
           entryAverage: { $avg: "$entryData.unitprice" },
-          quantityUnitprice: {
+          totalMoneySpent: {
             $reduce: {
               input: "$entryData",
               initialValue: 0,
@@ -83,7 +83,7 @@ module.exports = async function (_req, res, next) {
               $cond: [{ $eq: ["$profitLoss", "-"] }, 0, "$profitLoss"],
             },
           },
-          totalQuantityUnitprice: { $sum: "$quantityUnitprice" },
+          totalQuantityUnitprice: { $sum: "$totalMoneySpent" },
         },
       },
       {
@@ -92,7 +92,7 @@ module.exports = async function (_req, res, next) {
           percentageProfitloss: {
             $cond: [
               { $eq: ["$totalQuantityUnitprice", 0] },
-              "Sıfıra bölünemez",
+              0,
               {
                 $divide: [
                   {

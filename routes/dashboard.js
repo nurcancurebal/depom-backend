@@ -16,5 +16,9 @@ router.get(
   "/entered/product/quantity",
   require("../controllers/dashboard/entered-product-quantity")
 );
+router.get(
+  "/monthly/profitloss",
+  require("../controllers/dashboard/monthly-profitloss")
+);
 
 module.exports = router;
