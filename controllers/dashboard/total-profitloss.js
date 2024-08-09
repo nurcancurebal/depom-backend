@@ -37,9 +37,9 @@ module.exports = async function (_req, res, next) {
       {
         $addFields: {
           entryAverage: { $avg: "$entryData.unitprice" },
-          totalMoneySpent: {
+          moneyEarned: {
             $reduce: {
-              input: "$entryData",
+              input: "$checkoutData",
               initialValue: 0,
               in: {
                 $add: [
@@ -83,22 +83,22 @@ module.exports = async function (_req, res, next) {
               $cond: [{ $eq: ["$profitLoss", "-"] }, 0, "$profitLoss"],
             },
           },
-          totalQuantityUnitprice: { $sum: "$totalMoneySpent" },
+          totalMoneyEarned: { $sum: "$moneyEarned" },
         },
       },
       {
         $project: {
           totalProfitLoss: 1,
-          percentageProfitloss: {
+          netProfitMargin: {
             $cond: [
-              { $eq: ["$totalQuantityUnitprice", 0] },
+              { $eq: ["$totalMoneyEarned", 0] },
               0,
               {
                 $divide: [
                   {
                     $multiply: ["$totalProfitLoss", 100],
                   },
-                  "$totalQuantityUnitprice",
+                  "$totalMoneyEarned",
                 ],
               },
             ],
@@ -108,9 +108,7 @@ module.exports = async function (_req, res, next) {
     ]);
 
     return res.send(
-      result.length > 0
-        ? result[0]
-        : { totalProfitLoss: 0, percentageProfitloss: 0 }
+      result.length > 0 ? result[0] : { totalProfitLoss: 0, netProfitMargin: 0 }
     );
   } catch (error) {
     return next(error);

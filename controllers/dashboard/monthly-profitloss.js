@@ -50,7 +50,7 @@ module.exports = async function (_req, res, next) {
         },
         {
           $project: {
-            totalCheckoutData: {
+            moneyEarned: {
               $sum: {
                 $map: {
                   input: "$checkoutData",
@@ -59,7 +59,7 @@ module.exports = async function (_req, res, next) {
                 },
               },
             },
-            totalEntryData: {
+            moneySpent: {
               $sum: {
                 $map: {
                   input: "$entryData",
@@ -72,42 +72,35 @@ module.exports = async function (_req, res, next) {
         },
         {
           $project: {
-            monthlyProfitLoss: {
-              $cond: {
-                if: { $eq: ["$totalCheckoutData", 0] },
-                then: 0,
-                else: {
-                  $divide: [
+            _id: 0,
+            monthlyNetProfitLoss: {
+              $cond: [
+                { $eq: ["$moneyEarned", 0] },
+                0,
+                {
+                  $multiply: [
                     {
-                      $multiply: [
-                        {
-                          $subtract: ["$totalCheckoutData", "$totalEntryData"],
-                        },
-                        100,
+                      $divide: [
+                        { $subtract: ["$moneyEarned", "$moneySpent"] },
+                        "$moneyEarned",
                       ],
                     },
-                    "$totalCheckoutData",
+                    100,
                   ],
                 },
-              },
+              ],
             },
-          },
-        },
-        {
-          $project: {
-            _id: 0,
-            monthlyProfitLoss: 1,
           },
         },
       ]);
 
       let calculatedProfitLoss =
-        result.length > 0 ? result[0].monthlyProfitLoss : 0;
+        result.length > 0 ? result[0].monthlyNetProfitLoss : 0;
 
-      dateRange.data = Number(calculatedProfitLoss.toFixed(2));
+      dateRange.data = Math.round(calculatedProfitLoss).toString().slice(0, 3);
     }
 
-    const finalDateData = dateData.map(({ startDate, ...rest }) => rest);
+    const finalDateData = dateData.map(({ data }) => data);
 
     return res.send(finalDateData);
   } catch (error) {
