@@ -7,8 +7,8 @@ const ModelUser = require("../../models/user");
 
 module.exports = async function (req, res, next) {
   try {
-    const username = req.body.username;
-    const password = req.body.password;
+    const { username } = req.body;
+    const { password } = req.body;
 
     if (!username) throw new Error("Kullanıcı adı boş bırakılamaz!");
     if (!password) throw new Error("Şifre boş bırakılamaz!");
