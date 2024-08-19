@@ -50,7 +50,7 @@ module.exports = async function (req, res, next) {
       from: SMTP_USER,
       to: SMTP_RECIPIENT,
       subject: "Depom projesine öneri geldi!",
-      text: `Kullanıcı ID: ${_id}\nAd: ${user[0]._doc.firstname}\nSoyad: ${user[0]._doc.lastname}\nKullanıcı adı: ${user[0]._doc.username}\nE-posta: ${value.email}\nMesaj: ${value.message}`,
+      text: `Kullanıcı ID: ${_id}\nAd: ${user[0]._doc.firstname}\nSoyad: ${user[0]._doc.lastname}\nKullanıcı adı: ${user[0]._doc.username}\nE-posta: ${value.email}\n\nMesaj:\n${value.message}`,
     };
 
     transporter.sendMail(mailOptions, (error, _info) => {
