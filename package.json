@@ -1,8 +1,26 @@
 {
   "name": "depom-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "RESTful APIs for Depom, a platform for managing your personal belongings, built with Node.js, Express.js, MongoDB, and Mongoose.",
   "main": "index.js",
+  "keywords": [
+    "depom",
+    "backend",
+    "api",
+    "restful",
+    "node",
+    "express",
+    "mongodb",
+    "mongoose",
+    "jwt",
+    "nodemailer",
+    "cors",
+    "dotenv",
+    "joi",
+    "md5",
+    "authentication",
+    "authorization"   
+  ],
   "scripts": {
     "start": "node index.js"
   },
