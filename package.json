@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "RESTful APIs for Depom, a platform for managing your personal belongings, built with Node.js, Express.js, MongoDB, and Mongoose.",
   "main": "index.js",
+  "private": true,
   "keywords": [
     "depom",
     "backend",
