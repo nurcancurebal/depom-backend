@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "description": "RESTful APIs for Depom, a platform for managing your personal belongings, built with Node.js, Express.js, MongoDB, and Mongoose.",
   "main": "index.js",
-  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nurcancurebal/depom-backend"
+  },
   "keywords": [
     "depom",
     "backend",
@@ -22,11 +28,8 @@
     "authentication",
     "authorization"   
   ],
-  "scripts": {
-    "start": "node index.js"
-  },
-  "author": "",
-  "license": "ISC",
+  "author": "Nurcan Cürebal",
+  "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -37,5 +40,6 @@
     "mongodb": "^6.3.0",
     "mongoose": "^8.1.0",
     "nodemailer": "^6.9.14"
-  }
+  },
+  "private": true
 }
