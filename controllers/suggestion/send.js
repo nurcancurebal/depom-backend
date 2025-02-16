@@ -16,24 +16,16 @@ const userSchema = Joi.object({
   }),
 });
 
-const {
-  SMTP_HOST,
-  SMTP_PORT,
-  SMTP_USER,
-  SMTP_PASS,
-  SMTP_RECIPIENT,
-  SMTP_FROM,
-} = process.env;
+const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_RECIPIENT } =
+  process.env;
 
 const transporter = nodemailer.createTransport({
   host: SMTP_HOST,
   port: parseInt(SMTP_PORT),
+  secure: true,
   auth: {
     user: SMTP_USER,
     pass: SMTP_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false,
   },
 });
 
@@ -52,7 +44,7 @@ module.exports = async function (req, res, next) {
     if (!user) throw new Error("Kullanıcı bulunamadı!");
 
     const mailOptions = {
-      from: SMTP_FROM,
+      from: SMTP_USER,
       to: SMTP_RECIPIENT,
       subject: "Depom projesine öneri geldi!",
       text: `Kullanıcı ID: ${_id}\nAd: ${user[0]._doc.firstname}\nSoyad: ${user[0]._doc.lastname}\nKullanıcı adı: ${user[0]._doc.username}\nE-posta: ${value.email}\n\nMesaj:\n${value.message}`,
