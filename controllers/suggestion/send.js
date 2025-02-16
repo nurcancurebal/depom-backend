@@ -56,6 +56,8 @@ module.exports = async function (req, res, next) {
       text: `Kullanıcı ID: ${_id}\nAd: ${user[0]._doc.firstname}\nSoyad: ${user[0]._doc.lastname}\nKullanıcı adı: ${user[0]._doc.username}\nE-posta: ${value.email}\n\nMesaj:\n${value.message}`,
     };
 
+    console.log("Mail options:", mailOptions); // Log mail options for debugging
+
     transporter.sendMail(mailOptions, (error, _info) => {
       if (error) {
         console.error(error);
